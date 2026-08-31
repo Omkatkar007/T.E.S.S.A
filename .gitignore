@@ -1,0 +1,10 @@
+venv/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.env
+data/raw/*.csv
+qdrant_local_db/
+qdrant_storage/
+data/processed/ingest_checkpoint.json
