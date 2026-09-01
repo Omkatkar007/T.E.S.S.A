@@ -60,7 +60,7 @@ T.E.S.S.A. currently has indexed reviews for the following companies. Queries ab
 - 🔀 **Hybrid Retrieval** — Combines dense vector search (Qdrant + ONNX MiniLM embeddings) with lexical BM25 search for superior recall
 - 🔗 **Reciprocal Rank Fusion (RRF)** — Merges results from both retrievers without needing to normalize incompatible score scales
 - 🛡️ **4-Layer Guardrails** — Off-topic detection, prompt injection blocking, retrieval sufficiency checks, and post-generation grounding verification
-- 🎙️ **Voice Input (Optional)** — Speech-to-text via Sarvam AI's Saaras v3 for Hindi/English voice queries
+- 🎙️ **Voice Input (In production)** — Speech-to-text via Sarvam AI's Saaras v3 for Hindi/English voice queries
 - 🧠 **Groq LLM Generation** — Fast, context-constrained text generation with strict anti-hallucination system prompts
 - 🌊 **Modern UI** — Glassmorphism design with animated mesh gradients, hover effects, and real-time source citations
 - ⚡ **Lightweight Deployment** — ONNX Runtime replaces PyTorch, reducing RAM usage from ~1GB to ~50MB for free-tier cloud hosting
