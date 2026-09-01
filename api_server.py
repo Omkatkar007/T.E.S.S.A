@@ -18,7 +18,7 @@ from pydantic import BaseModel
 
 # ---------- Path setup ----------
 # Everything lives in this one folder
-BASE_DIR = r"D:\Btech 24-28\3 rd\ml\placement-truth-check\placement-truth-check"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")
 
 sys.path.insert(0, BASE_DIR)
