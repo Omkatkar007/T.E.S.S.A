@@ -1,4 +1,4 @@
-# Placement Truth Check
+# T.E.S.S.A. (Truth Extraction & Statement Scrutiny Assistant)
 
 A RAG system that answers company-comparison questions ("TCS vs Infosys — real pay,
 WFH, bench time") grounded in **real employee reviews** (AmbitionBox + Glassdoor),
