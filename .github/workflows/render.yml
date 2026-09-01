@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: render / production
-      url: https://https://t-e-s-s-a-lswy.onrender.com 
+      url: https://t-e-s-s-a-lswy.onrender.com/
     steps:
       - name: Trigger Render deploy
         run: curl "${{ secrets.RENDER_DEPLOY_HOOK }}"
