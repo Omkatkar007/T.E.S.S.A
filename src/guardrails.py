@@ -68,12 +68,13 @@ def check_sufficiency(reranked_chunks: list[dict]) -> GuardrailResult:
 
 
 def check_grounding(answer: str, context: str) -> GuardrailResult:
-    # 1. NEW: Let honest refusals from the LLM bypass the overlap check
+    # Print what the AI actually said to your Render logs!
+    print(f"--- AI ANSWER ATTEMPT ---\n{answer}\n-----------------------")
+    
     lower_answer = answer.lower()
     if "does not contain" in lower_answer or "enough information" in lower_answer or "cannot answer" in lower_answer:
         return GuardrailResult(passed=True)
 
-    # 2. ORIGINAL: Normal overlap check for actual answers
     answer_tokens = set(tokenize(answer))
     context_tokens = set(tokenize(context))
     
@@ -82,14 +83,16 @@ def check_grounding(answer: str, context: str) -> GuardrailResult:
         
     overlap = len(answer_tokens & context_tokens) / len(answer_tokens)
     
+    # Print the exact overlap score to your logs!
+    print(f"--- OVERLAP SCORE: {overlap:.2f} ---")
+    
     if overlap < config.GROUNDING_MIN_OVERLAP:
         return GuardrailResult(
             passed=False, layer="grounding",
             reason=f"Word-overlap {overlap:.2f} between answer and context is below "
-                   f"threshold {config.GROUNDING_MIN_OVERLAP} — likely hallucination.",
+                   f"threshold {config.GROUNDING_MIN_OVERLAP} — likely hallucination."
         )
     return GuardrailResult(passed=True)
-
 
 REFUSAL_MESSAGES = {
     "off_topic": "I can only answer questions about company placement experiences "
