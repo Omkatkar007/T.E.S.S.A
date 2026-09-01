@@ -1,6 +1,5 @@
 *.zip filter=lfs diff=lfs merge=lfs -text
 D:/Btech[[:space:]]24-28/3[[:space:]]rd/ml/placement-truth-check/placement-truth-check filter=lfs diff=lfs merge=lfs -text
-*.pkl filter=lfs diff=lfs merge=lfs -text
 D:/Btech[[:space:]]24-28/3[[:space:]]rd/ml/placement-truth-check/placement-truth-check filter=lfs diff=lfs merge=lfs -text
 placement-truth-check** filter=lfs diff=lfs merge=lfs -text
 placement-truth-check/** filter=lfs diff=lfs merge=lfs -text
