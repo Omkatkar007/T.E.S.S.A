@@ -360,7 +360,7 @@
 // Placement Truth Check — Frontend Logic
 // =====================================================================
 
-const BACKEND_URL = "http://localhost:8000/api/ask";
+const BACKEND_URL = "/api/ask";
 
 let sourceCounter = 0;
 
@@ -499,11 +499,10 @@ async function sendMessage(query) {
 
     try {
         const response = await fetch(BACKEND_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ query: query.trim() })
-        });
-
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query: query.trim() })
+      });
         const loader = document.getElementById('loading-indicator');
         if (loader) loader.remove();
 
