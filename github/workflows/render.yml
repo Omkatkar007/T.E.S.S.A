@@ -1,0 +1,15 @@
+name: Deploy to Render
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: render / production
+      url: https://tessa-xxxx.onrender.com  # <-- REPLACE THIS with your actual Render live URL
+    steps:
+      - name: Trigger Render deploy
+        run: curl "${{ secrets.RENDER_DEPLOY_HOOK }}"
