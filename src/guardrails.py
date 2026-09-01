@@ -66,13 +66,23 @@ def check_sufficiency(reranked_chunks: list[dict]) -> GuardrailResult:
         )
     return GuardrailResult(passed=True)
 
-
 def check_grounding(answer: str, context: str) -> GuardrailResult:
-    # Print what the AI actually said to your Render logs!
+    # --- AI ANSWER LOGGING ---
     print(f"--- AI ANSWER ATTEMPT ---\n{answer}\n-----------------------")
     
     lower_answer = answer.lower()
-    if "does not contain" in lower_answer or "enough information" in lower_answer or "cannot answer" in lower_answer:
+    
+    # Expanded whitelist for polite refusals
+    refusal_phrases = [
+        "does not contain", 
+        "do not contain",     # Added to catch plural grammar
+        "enough information", 
+        "cannot answer",
+        "unable to answer",
+        "do not have"
+    ]
+    
+    if any(phrase in lower_answer for phrase in refusal_phrases):
         return GuardrailResult(passed=True)
 
     answer_tokens = set(tokenize(answer))
@@ -83,7 +93,6 @@ def check_grounding(answer: str, context: str) -> GuardrailResult:
         
     overlap = len(answer_tokens & context_tokens) / len(answer_tokens)
     
-    # Print the exact overlap score to your logs!
     print(f"--- OVERLAP SCORE: {overlap:.2f} ---")
     
     if overlap < config.GROUNDING_MIN_OVERLAP:
