@@ -2,7 +2,7 @@
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Placement Truth Check</title>
+<title>T.E.S.S.A.</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
@@ -256,7 +256,7 @@
 <header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop py-4 bg-surface/10 backdrop-blur-3xl">
     <div class="flex items-center gap-2">
         <span class="material-symbols-outlined text-primary text-2xl" style="font-variation-settings: 'FILL' 1;">search</span>
-        <span class="font-display-lg text-title-md font-extrabold tracking-tighter text-on-surface">Placement Truth Check</span>
+        <span class="font-display-lg text-title-md font-extrabold tracking-tighter text-on-surface">T.E.S.S.A.</span>
     </div>
     <div class="flex items-center gap-3">
         <button class="text-on-surface-variant hover:text-primary transition-colors duration-300 rounded-full p-2 hover:bg-white/5">
@@ -275,11 +275,22 @@
         <!-- Hero / Empty State -->
         <div class="flex flex-col items-center justify-center text-center gap-6 animate-slide-up mt-[12vh]" id="empty-state">
             <h1 class="font-display-lg text-display-lg gradient-text-animate leading-tight">
-                Discover the truth about<br>company placements
+                T.E.S.S.A.
             </h1>
             <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
-                Powered by real employee reviews from AmbitionBox &amp; Glassdoor
+                Truth Extraction &amp; Statement Scrutiny Assistant<br>
+                <span class="text-sm opacity-80 mt-2 block">Powered by real employee reviews from AmbitionBox &amp; Glassdoor</span>
             </p>
+
+            <!-- Supported Companies Note -->
+            <div class="mt-4 p-3 rounded-xl glass-panel glass-noise border-white/5 w-full text-center max-w-3xl animate-slide-up delay-100">
+                <p class="font-label-sm text-[11px] text-outline uppercase tracking-wider mb-1 flex items-center justify-center gap-1.5">
+                    <span class="material-symbols-outlined text-[14px]">info</span> Currently Supported Companies
+                </p>
+                <p class="font-body-md text-[13px] text-on-surface-variant leading-relaxed px-4">
+                    TCS, Infosys, Wipro, Cognizant, Capgemini, Accenture, HCL, Tech Mahindra, IBM, Amazon, Deloitte, Mahindra, Tata Motors, Samsung
+                </p>
+            </div>
 
             <!-- Suggestion Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full mt-6">

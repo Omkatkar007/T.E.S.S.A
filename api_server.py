@@ -27,7 +27,7 @@ from src.config import config
 from src.pipeline import PlacementTruthCheckPipeline
 
 # ---------- App setup ----------
-app = FastAPI(title="Placement Truth Check API", version="1.0.0")
+app = FastAPI(title="T.E.S.S.A. API", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,

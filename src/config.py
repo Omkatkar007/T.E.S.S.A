@@ -11,8 +11,10 @@ load_dotenv()
 
 @dataclass
 class Config:
-    # --- Embeddings ---
-    EMBEDDING_MODEL: str = "Xenova/all-MiniLM-L6-v2"  # loaded via sentence-transformers equiv: "sentence-transformers/all-MiniLM-L6-v2"
+    # --- Embeddings (Cohere API) ---
+    COHERE_API_KEY: str = os.getenv("COHERE_API_KEY", "")
+    COHERE_EMBED_MODEL: str = "embed-english-light-v3.0"   # 384-dim, free tier
+    COHERE_RERANK_MODEL: str = "rerank-english-v3.0"        # free tier
     EMBEDDING_DIM: int = 384
 
     # --- Qdrant (dense retrieval) ---
@@ -31,7 +33,6 @@ class Config:
     FUSED_TOP_N: int = 15    # candidates handed to reranker
 
     # --- Reranking ---
-    RERANKER_MODEL: str = "cross-encoder/ms-marco-MiniLM-L-6-v2"
     RERANK_TOP_N: int = 5    # candidates kept after reranking
 
     # --- Context builder ---
