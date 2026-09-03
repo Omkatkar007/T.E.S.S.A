@@ -388,9 +388,6 @@ Contributions are welcome! Some ways to improve T.E.S.S.A.:
 
 ---
 
-## 📄 License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ---
 
