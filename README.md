@@ -9,7 +9,6 @@
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.x-FF4B4B?style=for-the-badge&logo=streamlit)
 ![Groq](https://img.shields.io/badge/Groq-LLM-orange?style=for-the-badge)
 ![Qdrant](https://img.shields.io/badge/Qdrant-In--Memory-purple?style=for-the-badge)
-![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
 </div>
 
@@ -273,10 +272,6 @@ pytest tests/ -v
 Contributions are welcome! Please open an issue or submit a pull request.
 
 ---
-
-## 📄 License
-
-This project is licensed under the MIT License.
 
 ---
 
