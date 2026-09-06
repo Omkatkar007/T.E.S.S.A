@@ -1,12 +1,5 @@
-# --- Trimmed for Render deployment ---
-# Removed vs. the original frozen list: pywin32 (Windows-only, breaks Linux
-# builds entirely), torch/transformers/sentence-transformers/safetensors
-# (replaced by onnxruntime — same model, ~no PyTorch memory overhead),
-# scipy/scikit-learn/networkx/sympy/mpmath (only needed by
-# sentence-transformers, now unused), streamlit/watchdog/altair/pydeck/
-# narwhals/blinker/toml (only needed by the standalone Streamlit app.py,
-# not the FastAPI backend Render actually runs).
-
+# --- Streamlit Cloud deployment ---
+streamlit>=1.31.0
 fastapi==0.141.1
 uvicorn==0.52.4
 gunicorn==22.0.0
@@ -20,7 +13,7 @@ qdrant-client==1.19.0
 groq==1.7.0
 
 # ONNX Runtime replaces torch — same MiniLM model, far less memory
-onnxruntime==1.20.1
+onnxruntime>=1.24.1
 tokenizers==0.23.1
 huggingface_hub==1.29.0
 hf-xet==1.6.0
