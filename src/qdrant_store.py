@@ -22,11 +22,7 @@ class QdrantStore:
         self.collection = config.QDRANT_COLLECTION
 
     def _new_client(self) -> QdrantClient:
-        return QdrantClient(
-            url=config.QDRANT_URL,
-            api_key=config.QDRANT_API_KEY or None,
-            timeout=120,  # seconds
-        )
+        return QdrantClient(location=":memory:")
 
     def ensure_collection(self, recreate: bool = False):
         exists = self.client.collection_exists(self.collection)

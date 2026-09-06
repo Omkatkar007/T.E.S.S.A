@@ -5,8 +5,12 @@ Reranking -> Context Builder -> LLM -> Guardrails -> Response
 """
 from __future__ import annotations
 from dataclasses import dataclass, field
+import uuid
+
+import pandas as pd
 
 from . import guardrails as gr
+from .bm25 import BM25Index
 from .config import config
 from .context_builder import build_context
 from .embeddings import get_embedder
@@ -25,21 +29,68 @@ class PipelineResponse:
     sources: list[dict] = field(default_factory=list)
 
 
-class PlacementTruthCheckPipeline:
-    def __init__(self, bm25_index, doc_lookup: dict[str, dict]):
+class TessaPipeline:
+    def __init__(self):
         """
-        bm25_index: a built BM25Index (see ingest.py)
-        doc_lookup: {doc_id: {"text": ..., "payload": {...}}} for fetching
-                    text back after BM25/Qdrant return only ids.
+        Initializes an empty pipeline. Data must be loaded via ingest_dataframe().
         """
-        self.bm25 = bm25_index
-        self.doc_lookup = doc_lookup
+        self.bm25 = None
+        self.doc_lookup = {}
         self.embedder = get_embedder()
         self.qdrant = QdrantStore()
         self.reranker = get_reranker()
         self.llm = GroqGenerator()
 
+    def ingest_dataframe(self, df: pd.DataFrame, progress_callback=None):
+        """
+        Reads a dataframe, extracts text, embeds it, and populates the in-memory stores.
+        """
+        docs = []
+        for _, row in df.iterrows():
+            text_parts = []
+            payload = {}
+            for col in df.columns:
+                val = row[col]
+                if pd.notna(val):
+                    text_parts.append(f"{col}: {val}")
+                    payload[str(col)] = str(val)
+            
+            text = " | ".join(text_parts)
+            if len(text) > 10:
+                docs.append({
+                    "id": str(uuid.uuid4()),
+                    "text": text,
+                    "payload": payload
+                })
+        
+        if not docs:
+            return
+
+        self.qdrant.ensure_collection(recreate=True)
+
+        batch_size = 64
+        total_batches = (len(docs) + batch_size - 1) // batch_size
+        
+        for batch_idx, i in enumerate(range(0, len(docs), batch_size)):
+            batch = docs[i:i + batch_size]
+            texts = [d["text"] for d in batch]
+            vecs = self.embedder.encode(texts)
+            ids = [d["id"] for d in batch]
+            payloads = [d["payload"] | {"text": d["text"]} for d in batch]
+            self.qdrant.upsert(ids, vecs, payloads)
+            
+            if progress_callback:
+                progress_callback(min(1.0, (batch_idx + 1) / total_batches))
+
+        self.bm25 = BM25Index()
+        self.bm25.build([(d["id"], d["text"]) for d in docs])
+
+        self.doc_lookup = {d["id"]: {"text": d["text"], "payload": d["payload"]} for d in docs}
+
     def answer(self, query: str | None = None, audio_path: str | None = None) -> PipelineResponse:
+        if not self.bm25:
+            return PipelineResponse(answer="Please upload a CSV file first.", grounded=False, refusal_layer="system")
+
         # --- Stage 0: STT (optional) ---
         if audio_path is not None:
             query = transcribe(audio_path)
@@ -51,7 +102,7 @@ class PlacementTruthCheckPipeline:
             result = check(query)
             if not result.passed:
                 return PipelineResponse(
-                    answer=gr.REFUSAL_MESSAGES[result.layer],
+                    answer=gr.REFUSAL_MESSAGES.get(result.layer, "Blocked by guardrail."),
                     grounded=False,
                     refusal_layer=result.layer,
                 )
@@ -73,13 +124,6 @@ class PlacementTruthCheckPipeline:
         for doc_id, _fused_score in fused:
             doc = self.doc_lookup.get(doc_id)
             if doc:
-                # Without a cross-encoder, we need a genuinely meaningful
-                # 0-1-ish confidence score for the sufficiency guardrail —
-                # NOT just a rank position (which would always give the top
-                # result a perfect score regardless of actual relevance).
-                # Dense cosine similarity is naturally ~0-1 for normalized
-                # vectors; BM25's raw score is normalized against the best
-                # score in this result set to put it on a comparable scale.
                 dense_conf = dense_score_map.get(doc_id, 0.0)
                 lexical_conf = lexical_score_map.get(doc_id, 0.0) / max_lexical_score
                 retrieval_confidence = max(dense_conf, lexical_conf)
@@ -97,7 +141,7 @@ class PlacementTruthCheckPipeline:
         result = gr.check_sufficiency(reranked)
         if not result.passed:
             return PipelineResponse(
-                answer=gr.REFUSAL_MESSAGES[result.layer], grounded=False, refusal_layer=result.layer,
+                answer=gr.REFUSAL_MESSAGES.get(result.layer, "Insufficient evidence."), grounded=False, refusal_layer=result.layer,
             )
 
         # --- Stage 4: Context building ---
@@ -110,7 +154,7 @@ class PlacementTruthCheckPipeline:
         result = gr.check_grounding(raw_answer, context)
         if not result.passed:
             return PipelineResponse(
-                answer=gr.REFUSAL_MESSAGES[result.layer], grounded=False, refusal_layer=result.layer,
+                answer=gr.REFUSAL_MESSAGES.get(result.layer, "Ungrounded answer."), grounded=False, refusal_layer=result.layer,
                 sources=chunks_used,
             )
 

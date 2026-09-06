@@ -25,8 +25,8 @@ tokenizers==0.23.1
 huggingface_hub==1.29.0
 hf-xet==1.6.0
 
-pandas==3.0.5
-numpy==2.5.2
+pandas>=2.2,<3.0
+numpy>=1.26,<2.0
 tqdm==4.70.0
 python-dotenv==1.2.3
 requests==2.34.2

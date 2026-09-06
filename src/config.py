@@ -1,5 +1,5 @@
 """
-Central configuration for the Placement Truth Check RAG pipeline.
+Central configuration for the T.E.S.S.A. RAG pipeline.
 All tunables live here so the rest of the codebase never hardcodes constants.
 """
 import os
@@ -51,7 +51,7 @@ class Config:
     SARVAM_MODEL: str = "saaras:v3"
 
     # --- Guardrails ---
-    GROUNDING_MIN_OVERLAP: float = 0.15       # min word-overlap ratio answer<->context
+    GROUNDING_MIN_OVERLAP: float = 0.10       # min word-overlap ratio answer<->context
     SUFFICIENCY_MIN_RERANK_SCORE: float = 0.2  # below this, treat retrieval as "insufficient evidence"
     OFF_TOPIC_KEYWORDS_ALLOW: tuple = (
         "salary", "pay", "ctc", "wfh", "remote", "bench", "notice period",

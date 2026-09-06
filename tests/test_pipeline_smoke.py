@@ -1,5 +1,5 @@
 """
-End-to-end smoke test for PlacementTruthCheckPipeline with every network-
+End-to-end smoke test for TessaPipeline with every network-
 dependent component mocked out (embedder, Qdrant, cross-encoder, Groq).
 
 This sandbox can't reach huggingface.co / api.groq.com / Qdrant's docker
@@ -14,7 +14,7 @@ import pytest
 from unittest.mock import MagicMock, patch
 
 from src.bm25 import BM25Index
-from src.pipeline import PlacementTruthCheckPipeline, PipelineResponse
+from src.pipeline import TessaPipeline, PipelineResponse
 
 
 SAMPLE_DOCS = [
@@ -76,7 +76,9 @@ def pipeline():
         )
         mock_llm_cls.return_value = mock_llm
 
-        pipe = PlacementTruthCheckPipeline(bm25_index=_build_bm25(), doc_lookup=DOC_LOOKUP)
+        pipe = TessaPipeline()
+        pipe.bm25 = _build_bm25()
+        pipe.doc_lookup = DOC_LOOKUP
         yield pipe
 
 

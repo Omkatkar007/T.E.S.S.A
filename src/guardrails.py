@@ -32,14 +32,8 @@ class GuardrailResult:
 
 
 def check_off_topic(query: str) -> GuardrailResult:
-    q = query.lower()
-    has_company = any(c in q for c in config.COMPANIES)
-    has_topic_word = any(kw in q for kw in config.OFF_TOPIC_KEYWORDS_ALLOW)
-    if not (has_company or has_topic_word):
-        return GuardrailResult(
-            passed=False, layer="off_topic",
-            reason="Query doesn't reference a tracked company or a placement/work-life topic.",
-        )
+    # Off-topic checks are disabled for the HR pivot since HR teams 
+    # query their own specific internal datasets.
     return GuardrailResult(passed=True)
 
 
@@ -68,8 +62,24 @@ def check_sufficiency(reranked_chunks: list[dict]) -> GuardrailResult:
 
 
 def check_grounding(answer: str, context: str) -> GuardrailResult:
-    answer_tokens = set(tokenize(answer))
-    context_tokens = set(tokenize(context))
+    # Stopwords that inflate the denominator without adding grounding signal
+    _STOPWORDS = {
+        "the", "a", "an", "is", "are", "was", "were", "be", "been", "being",
+        "have", "has", "had", "do", "does", "did", "will", "would", "could",
+        "should", "may", "might", "shall", "can", "to", "of", "in", "for",
+        "on", "with", "at", "by", "from", "as", "into", "through", "during",
+        "before", "after", "above", "below", "between", "out", "off", "over",
+        "under", "again", "further", "then", "once", "here", "there", "when",
+        "where", "why", "how", "all", "each", "every", "both", "few", "more",
+        "most", "other", "some", "such", "no", "nor", "not", "only", "own",
+        "same", "so", "than", "too", "very", "just", "because", "but", "and",
+        "or", "if", "while", "about", "up", "it", "its", "this", "that",
+        "these", "those", "i", "you", "he", "she", "we", "they", "me", "him",
+        "her", "us", "them", "my", "your", "his", "our", "their", "what",
+        "which", "who", "whom", "also", "however", "based", "according",
+    }
+    answer_tokens = set(tokenize(answer)) - _STOPWORDS
+    context_tokens = set(tokenize(context)) - _STOPWORDS
     if not answer_tokens:
         return GuardrailResult(passed=False, layer="grounding", reason="Empty answer.")
     overlap = len(answer_tokens & context_tokens) / len(answer_tokens)

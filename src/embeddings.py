@@ -54,7 +54,8 @@ class _EmbeddingSingleton:
         # contention low on small/free-tier hosts. Fine for the request
         # volumes a resume-demo project actually sees.
         sess_options = ort.SessionOptions()
-        sess_options.intra_op_num_threads = 1
+        import os
+        sess_options.intra_op_num_threads = os.cpu_count() or 4
         self.session = ort.InferenceSession(
             onnx_path, sess_options=sess_options, providers=["CPUExecutionProvider"]
         )
